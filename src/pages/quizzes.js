@@ -1,10 +1,9 @@
 import React from "react"
 import { Link, graphql } from "gatsby"
 
-import Bio from "../components/bio"
-import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm } from "../utils/typography"
+
 class BlogIndex extends React.Component {
   render() {
     const { data } = this.props
@@ -12,10 +11,9 @@ class BlogIndex extends React.Component {
     const posts = data.allMarkdownRemark.edges
 
     return (
-      <Layout location={this.props.location} title={siteTitle}>
+      <>
         <SEO title="All posts" />
-        <Bio />
-        <Link to="quizzes">a</Link>
+        {siteTitle}
         {posts.map(({ node }) => {
           const title = node.frontmatter.title || node.fields.slug
           return (
@@ -38,12 +36,13 @@ class BlogIndex extends React.Component {
             </div>
           )
         })}
-      </Layout>
+      </>
     )
   }
 }
 
 export default BlogIndex
+
 export const pageQuery = graphql`
   query {
     site {
@@ -51,7 +50,10 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+    allMarkdownRemark(
+      sort: { fields: [frontmatter___date], order: DESC }
+      filter: { frontmatter: { templateKey: { eq: "quiz-post" } } }
+    ) {
       edges {
         node {
           excerpt
